@@ -1,0 +1,55 @@
+// Generate a random string to use in ACR instance name
+resource "random_string" "acr_suffix" {
+  length  = 4
+  special = false
+  upper   = false
+}
+//**********************************************************************************************
+
+
+// Azure Container Registry
+resource "azurerm_container_registry" "acr" {
+  name                     = local.acr_name
+  resource_group_name      = var.resource_group_name
+  location                 = var.location
+  sku                      = var.sku
+  admin_enabled            = var.admin_enabled
+  georeplication_locations = var.sku == "Premium" ? var.georeplication_locations : null
+
+  network_rule_set {
+    #default_action = var.sku == "Premium" ? var.network_rule_default_action : null
+    default_action = var.network_rule_default_action
+
+    /* ip_rule {
+      action   = var.sku == "Premium" ? var.ip_rule.action : null
+      ip_range = var.sku == "Premium" ? var.ip_rule.ip_range : null
+    } */
+
+    ip_rule = [
+      for ip in var.ip_rule : {
+        action   = "Allow"
+        ip_range = ip
+      }
+    ]
+
+    /* virtual_network {
+      action    = var.sku == "Premium" ? var.virtual_network.action : null
+      subnet_id = var.sku == "Premium" ? var.virtual_network.subnet_id : null
+    } */
+
+    virtual_network = [
+      for subnet in var.virtual_network : {
+        action    = "Allow"
+        subnet_id = subnet
+      }
+    ]
+  }
+
+  # tags = var.tags
+
+  timeouts {
+    create = local.timeout_duration
+    delete = local.timeout_duration
+  }
+}
+//**********************************************************************************************
