@@ -54,21 +54,15 @@ variable "network_rule_default_action" {
 }
 
 # Network/IP Rules
-variable "ip_rule" {
-  type = map(object({
-    action   = string #(Required) The behaviour for requests matching this rule
-    ip_range = string # (Required) The CIDR block from which requests will match the rule
-  }))
-  description = "(Optional) One or more ip_rule blocks"
-  default     = {}
+variable "ip_range" {
+  type        = list(string)
+  description = "(Optional) The CIDR block from which requests will match the rule"
+  default     = []
 }
-variable "virtual_network" {
-  type = map(object({
-    action    = string #(Required) The behaviour for requests matching this rule
-    subnet_id = string #The subnet id from which requests will match the rule
-  }))
-  description = "(Optional) One or more virtual_network blocks"
-  default     = {}
+variable "subnet_id" {
+  type        = list(string)
+  description = "(Optional) The subnet id from which requests will match the rule"
+  default     = []
 }
 
 variable "acr_prefix" {
@@ -100,6 +94,16 @@ variable "it_depends_on" {
 locals {
   timeout_duration = "1h"
   acr_name         = "${var.acr_prefix}${var.name}${random_string.acr_suffix.result}"
+  ip_range = [for ip in var.ip_range : {
+    action   = "Allow",
+    ip_range = ip
+    }
+  ]
+  subnet_id = [for id in var.subnet_id : {
+    action    = "Allow",
+    subnet_id = id
+    }
+  ]
 }
 
 

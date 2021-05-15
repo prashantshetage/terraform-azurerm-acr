@@ -13,42 +13,18 @@ resource "azurerm_container_registry" "acr" {
   location            = var.location
   sku                 = var.sku
   admin_enabled       = var.admin_enabled
-  #georeplication_locations = var.sku == "Premium" ? var.georeplication_locations : null # Depricated
 
   dynamic "georeplications" {
-    for_each = var.georeplications
-    #for_each = var.georeplication_locations
+    for_each = var.sku == "Premium" ? var.georeplications : {}
     content {
-      #location = georeplications.value
-      #tags     = var.georeplication_tags
       location = georeplications.value.location
       tags     = georeplications.value.tags
     }
   }
   network_rule_set {
-    default_action = var.sku == "Premium" ? var.network_rule_default_action : null
-
-    ip_rule = flatten([
-      for ip in var.ip_rule : {
-        action   = ip.action
-        ip_range = ip.ip_range
-      }
-    ])
-
-    # Change to map input
-    /* ip_rule = [
-      for rule_key, ip in var.ip_rule : {
-        action   = ip.action
-        ip_range = ip.ip_range
-      }
-    ] */
-
-    virtual_network = flatten([
-      for subnet in var.virtual_network : {
-        action    = subnet.action
-        subnet_id = subnet.subnet_id
-      }
-    ])
+    default_action  = var.sku == "Premium" ? var.network_rule_default_action : null
+    ip_rule         = local.ip_range
+    virtual_network = local.subnet_id
   }
 
   tags = merge(var.resource_tags, var.deployment_tags)
