@@ -8,13 +8,22 @@ resource "random_string" "acr_suffix" {
 
 // Azure Container Registry
 resource "azurerm_container_registry" "acr" {
-  name                     = local.acr_name
-  resource_group_name      = var.resource_group_name
-  location                 = var.location
-  sku                      = var.sku
-  admin_enabled            = var.admin_enabled
-  georeplication_locations = var.sku == "Premium" ? var.georeplication_locations : null
+  name                = local.acr_name
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  sku                 = var.sku
+  admin_enabled       = var.admin_enabled
+  #georeplication_locations = var.sku == "Premium" ? var.georeplication_locations : null # Depricated
 
+  dynamic "georeplications" {
+    #for_each = var.georeplications
+    for_each = var.georeplication_locations
+    content {
+      location = georeplications.value.location
+      tags     = var.georeplication_tags
+      #tags = georeplications.value.tags
+    }
+  }
   network_rule_set {
     default_action = var.sku == "Premium" ? var.network_rule_default_action : null
 
