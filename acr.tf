@@ -16,12 +16,13 @@ resource "azurerm_container_registry" "acr" {
   #georeplication_locations = var.sku == "Premium" ? var.georeplication_locations : null # Depricated
 
   dynamic "georeplications" {
-    #for_each = var.georeplications
-    for_each = var.georeplication_locations
+    for_each = var.georeplications
+    #for_each = var.georeplication_locations
     content {
-      location = georeplications.value
-      tags     = var.georeplication_tags
-      #tags = georeplications.value.tags
+      #location = georeplications.value
+      #tags     = var.georeplication_tags
+      location = georeplications.value.location
+      tags     = georeplications.value.tags
     }
   }
   network_rule_set {

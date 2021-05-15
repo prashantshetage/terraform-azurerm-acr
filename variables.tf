@@ -29,8 +29,8 @@ variable "sku" {
 # Add condition for Premium SKU
 variable "georeplications" {
   type = map(object({
-    location = string #(Required) A location where the container registry should be geo-replicated.
-    tags     = map(any)    #(Optional) A mapping of tags to assign to this replication location.
+    location = string   #(Required) A location where the container registry should be geo-replicated.
+    tags     = map(any) #(Optional) A mapping of tags to assign to this replication location.
   }))
   description = "(Optional) Azure locations where the container registry should be geo-replicated"
   default     = {}
