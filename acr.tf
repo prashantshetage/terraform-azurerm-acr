@@ -19,7 +19,7 @@ resource "azurerm_container_registry" "acr" {
     #for_each = var.georeplications
     for_each = var.georeplication_locations
     content {
-      location = georeplications.value.location
+      location = georeplications.value
       tags     = var.georeplication_tags
       #tags = georeplications.value.tags
     }
