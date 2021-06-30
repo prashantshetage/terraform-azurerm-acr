@@ -22,7 +22,7 @@ resource "azurerm_container_registry" "acr" {
     }
   }
   dynamic "network_rule_set" {
-    for_each = var.sku == "Premium" && var.network_rule_set ? ["create_rule"] : []
+    for_each = var.sku == "Premium" && var.enable_network_rule_set ? ["create_rule"] : []
     content {
       default_action  = var.default_action
       ip_rule         = local.ip_range
