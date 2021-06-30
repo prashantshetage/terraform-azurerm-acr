@@ -21,10 +21,13 @@ resource "azurerm_container_registry" "acr" {
       tags     = georeplications.value.tags
     }
   }
-  network_rule_set {
-    default_action  = var.sku == "Premium" ? var.network_rule_default_action : null
-    ip_rule         = local.ip_range
-    virtual_network = local.subnet_id
+  dynamic "network_rule_set" {
+    for_each = var.sku == "Premium" && var.network_rule_set ? ["create_rule"] : []
+    content {
+      default_action  = var.default_action
+      ip_rule         = local.ip_range
+      virtual_network = local.subnet_id
+    }
   }
 
   tags = merge(var.resource_tags, var.deployment_tags)

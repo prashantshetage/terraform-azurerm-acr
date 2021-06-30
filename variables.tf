@@ -18,7 +18,7 @@ variable "name" {
 variable "admin_enabled" {
   type        = bool
   description = "(Optional) Specifies whether the admin user is enabled"
-  default     = false
+  default     = true
 }
 variable "sku" {
   type        = string
@@ -46,14 +46,17 @@ variable "georeplication_tags" {
   default     = {}
 }
 
-# Add condition for Premium SKU
-variable "network_rule_default_action" {
+# Network/IP Rules
+variable "enable_network_rule_set" {
+  type        = bool
+  description = "(Optional) Flag to enable/disable network rules"
+  default     = true
+}
+variable "default_action" {
   type        = string
-  description = "The behaviour for requests matching no rules"
+  description = "(Optional) The behaviour for requests matching no rules"
   default     = "Deny"
 }
-
-# Network/IP Rules
 variable "ip_range" {
   type        = list(string)
   description = "(Optional) The CIDR block from which requests will match the rule"
