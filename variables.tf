@@ -47,6 +47,11 @@ variable "georeplication_tags" {
 }
 
 # Network/IP Rules
+variable "public_network_access_enabled" {
+  type        = bool
+  description = "(Optional) Whether public network access is allowed for the container registry. Defaults to true"
+  default     = false
+}
 variable "enable_network_rule_set" {
   type        = bool
   description = "(Optional) Flag to enable/disable network rules"
