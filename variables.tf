@@ -101,7 +101,8 @@ variable "it_depends_on" {
 // Local Values
 locals {
   timeout_duration = "1h"
-  acr_name         = "${var.acr_prefix}${var.name}${random_string.acr_suffix.result}"
+  #acr_name         = "${var.acr_prefix}${var.name}${random_string.acr_suffix.result}"
+  acr_name = "${var.acr_prefix}${var.name}"
   ip_range = [for ip in var.ip_range : {
     action   = "Allow",
     ip_range = ip
@@ -113,8 +114,3 @@ locals {
     }
   ]
 }
-
-
-
-
- 

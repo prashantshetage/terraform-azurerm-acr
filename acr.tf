@@ -1,9 +1,9 @@
 // Generate a random string to use in ACR instance name
-resource "random_string" "acr_suffix" {
+/* resource "random_string" "acr_suffix" {
   length  = 4
   special = false
   upper   = false
-}
+} */
 
 
 // Azure Container Registry
