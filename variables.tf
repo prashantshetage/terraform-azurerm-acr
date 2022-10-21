@@ -9,7 +9,7 @@ variable "location" {
   description = "(Required) Specifies the supported Azure location where the resource exists"
 }
 
-variable "name" {
+variable "acr_name" {
   type        = string
   description = "(Required) Specifies the name of the Container Registry"
 }
@@ -95,22 +95,4 @@ variable "it_depends_on" {
   type        = any
   description = "(Optional) To define explicit dependencies if required"
   default     = null
-}
-
-
-// Local Values
-locals {
-  timeout_duration = "1h"
-  #acr_name         = "${var.acr_prefix}${var.name}${random_string.acr_suffix.result}"
-  acr_name = "${var.acr_prefix}${var.name}"
-  ip_range = [for ip in var.ip_range : {
-    action   = "Allow",
-    ip_range = ip
-    }
-  ]
-  subnet_id = [for id in var.subnet_id : {
-    action    = "Allow",
-    subnet_id = id
-    }
-  ]
 }
